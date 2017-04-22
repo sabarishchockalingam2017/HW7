@@ -85,10 +85,10 @@ void I2C_read_multiple(unsigned char address, unsigned char reg, unsigned char *
     unsigned short i;
     
     i2c_master_start(); //sending start bit, this time to write register to read 
-    i2c_master_send(SL_WR); //sending Write Control bit, last bit 0 as this is a write
-    i2c_master_send(address); //sending address of PORT register
+    i2c_master_send(address); //sending Write Control bit, last bit 0 as this is a write
+    i2c_master_send(reg); //sending address of PORT register
     i2c_master_restart(); //restarting transfer this time to read
-    i2c_master_send(SL_RD); //sending Read Control bit, last bit 1 as this is a read
+    i2c_master_send(address+1); //sending Read Control bit, last bit 1 as this is a read
     for(i=0;i<length-1;i++){
     data[i]=i2c_master_recv(); //receiving data from register
     i2c_master_ack(0);
@@ -98,8 +98,11 @@ void I2C_read_multiple(unsigned char address, unsigned char reg, unsigned char *
     i2c_master_stop(); // sending stop bit, releases control of bus;
 }
 
-short combine(unsigned char l, unsigned char h){
+short combine(unsigned char l, unsigned char h){ //combines IMU 16bits ints which are split to 2 8byte vals
     short c;
-    c=((0x00FF)&&(l))+(h<<8);
+    c=(h<<8)|l; // combining msbs with lsbs
     return c;
 }
+
+
+  

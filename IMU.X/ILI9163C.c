@@ -236,3 +236,73 @@ void LCD_drawBar(unsigned short locx, unsigned short locy, unsigned short color,
         }
     }
 }
+
+void LCD_drawXBar(unsigned short locx, unsigned short locy, unsigned short color, unsigned char len, unsigned char width, short fill){
+    int i,j;
+    float frac;
+    frac=(float)fill/16383;
+    
+    if(fill>=0){
+    for(i=0;i<len;i++){
+        if(i<((int)(len*frac))){
+            for(j=0;j<width;j++){
+               LCD_drawPixel(locx+i,locy+j,color);
+            }
+        }
+            else{
+            for(j=0;j<width;j++){
+              LCD_drawPixel(locx+i,locy+j,BGCOLOR);
+            }
+        }
+    }
+    }
+    else{
+        for(i=0;i<len;i++){
+        if(i<((int)(len*-1*frac))){
+            for(j=0;j<width;j++){
+               LCD_drawPixel(locx-i,locy+j,color);
+            }
+        }
+            else{
+            for(j=0;j<width;j++){
+              LCD_drawPixel(locx-i,locy+j,BGCOLOR);
+            }
+        }
+    }
+    }
+}
+
+void LCD_drawYBar(unsigned short locx, unsigned short locy, unsigned short color, unsigned char len, unsigned char width, short fill){
+    int i,j;
+    float frac;
+    frac=(float)fill/16383;
+    
+    if(fill>=0){
+    for(i=0;i<len;i++){
+        if(i<((int)(len*frac))){
+            for(j=0;j<width;j++){
+               LCD_drawPixel(locx+j,locy+i,color);
+            }
+        }
+            else{
+            for(j=0;j<width;j++){
+              LCD_drawPixel(locx+j,locy+i,BGCOLOR);
+            }
+        }
+    }
+    }
+    else{
+        for(i=0;i<len;i++){
+        if(i<((int)(len*-1*frac))){
+            for(j=0;j<width;j++){
+               LCD_drawPixel(locx-j,locy+i,color);
+            }
+        }
+            else{
+            for(j=0;j<width;j++){
+              LCD_drawPixel(locx-j,locy+i,BGCOLOR);
+            }
+        }
+    }
+    }
+}

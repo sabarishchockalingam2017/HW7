@@ -1,6 +1,7 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
-#include "ILI9163C.h"
+#include "ILI9163C.h" // LCD Library
+#include "i2c_master_noint.h" // I2C/IMU Library
 
 // PIC32MX250F128B Configuration Bit Settings
 
@@ -76,22 +77,18 @@ int main() {
     sprintf(buffer,"This works!");
     LCD_writeString(28,20,0xFC00,buffer);
     char whoami=I2C_read(0x0F);
-    char datap[6];
     sprintf(buffer,"WHOAMI is: %d",whoami);
     LCD_writeString(28,32,0xFC00,buffer);
-    sprintf(buffer,"X XL L: ");
-    LCD_writeString(5,40,0xFC00,buffer);
-    sprintf(buffer,"X XL H: ");
+
+    sprintf(buffer,"X XL: ");
     LCD_writeString(5,50,0xFC00,buffer);
-    sprintf(buffer,"Y XL L: ");
+    sprintf(buffer,"Y XL: ");
     LCD_writeString(5,60,0xFC00,buffer);
-    sprintf(buffer,"Y XL H: ");
+    sprintf(buffer,"Z XL: ");
     LCD_writeString(5,70,0xFC00,buffer);
-    sprintf(buffer,"Z XL L: ");
-    LCD_writeString(5,80,0xFC00,buffer);
-    sprintf(buffer,"Z XL H: ");
-    LCD_writeString(5,90,0xFC00,buffer);
-    short comb;
+    
+    char datap[14];
+    short combData[7];
     int i;
     while(1) {
 //        LATBbits.LATB7=!PORTBbits.RB4;
@@ -102,13 +99,20 @@ int main() {
                   ;   // Pin B4 is the USER switch, low (FALSE) if pressed.
              }
         }
-        I2C_read_multiple(0x28, 1, datap, 6);
+        
+        I2C_read_multiple(IMU_ADDR, 0x20, datap, 14);
 
-        for(i=0;i<3;i++){
-            comb=combine(datap[2*i],datap[2*i+1]);
-           sprintf(buffer,"%08d",comb);
-           LCD_writeString(50,40+i*10,0xFC00,buffer);
+        for(i=0;i<7;i++){
+            combData[i]=combine(datap[2*i],datap[2*i+1]);
         }
+        
+        for(i=0;i<3;i++){
+            sprintf(buffer,"%08d",combData[i+4]);
+            LCD_writeString(35,50+i*10,0xFC00,buffer);
+        }
+        
+        LCD_drawXBar(64,100,0xF800,50,4,combData[4]);
+        LCD_drawYBar(64,100,0x07E0,50,4,combData[5]);
         LATAINV=0b10000;
         
 	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing

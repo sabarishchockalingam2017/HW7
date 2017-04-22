@@ -5,6 +5,7 @@
 // helps implement use I2C2 as a master without using interrupts
 #define SL_WR 0b11010110
 #define SL_RD 0b11010111
+#define IMU_ADDR 0b11010110
 
 void i2c_master_setup(void);              // set up I2C 1 as a master, at 100 kHz
 
