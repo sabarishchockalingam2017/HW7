@@ -74,22 +74,21 @@ int main() {
     
     LCD_clearScreen(0x00FF);
     char buffer[50];
-    sprintf(buffer,"This works!");
-    LCD_writeString(28,20,0xFC00,buffer);
-    char whoami=I2C_read(0x0F);
-    sprintf(buffer,"WHOAMI is: %d",whoami);
-    LCD_writeString(28,32,0xFC00,buffer);
 
-    sprintf(buffer,"X XL: ");
-    LCD_writeString(5,50,0xFC00,buffer);
-    sprintf(buffer,"Y XL: ");
-    LCD_writeString(5,60,0xFC00,buffer);
-    sprintf(buffer,"Z XL: ");
-    LCD_writeString(5,70,0xFC00,buffer);
+    char whoami=I2C_read(0x0F);
+    sprintf(buffer,"WHOAMI:");
+    LCD_writeString(5,2,0xFC00,buffer);
+    sprintf(buffer,"%d",whoami);
+    LCD_writeString(5,12,0xFC00,buffer);
     
+    sprintf(buffer,"x");
+    LCD_writeString(120,64,0xFFFF,buffer);
+    sprintf(buffer,"y");
+    LCD_writeString(64,2,0xFFFF,buffer);
     char datap[14];
     short combData[7];
     int i;
+    
     while(1) {
 //        LATBbits.LATB7=!PORTBbits.RB4;
         _CP0_SET_COUNT(0);
@@ -106,13 +105,8 @@ int main() {
             combData[i]=combine(datap[2*i],datap[2*i+1]);
         }
         
-        for(i=0;i<3;i++){
-            sprintf(buffer,"%08d",combData[i+4]);
-            LCD_writeString(35,50+i*10,0xFC00,buffer);
-        }
-        
-        LCD_drawXBar(64,100,0xF800,50,4,combData[4]);
-        LCD_drawYBar(64,100,0x07E0,50,4,combData[5]);
+        LCD_drawXBar(64,64,0xF800,50,4,combData[4]);
+        LCD_drawYBar(64,64,0x07E0,50,4,combData[5]);
         LATAINV=0b10000;
         
 	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing

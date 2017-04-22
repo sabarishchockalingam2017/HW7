@@ -247,11 +247,13 @@ void LCD_drawXBar(unsigned short locx, unsigned short locy, unsigned short color
         if(i<((int)(len*frac))){
             for(j=0;j<width;j++){
                LCD_drawPixel(locx+i,locy+j,color);
+               LCD_drawPixel(locx-i,locy+j,BGCOLOR);// erasing other side, non used side
             }
         }
             else{
             for(j=0;j<width;j++){
               LCD_drawPixel(locx+i,locy+j,BGCOLOR);
+              LCD_drawPixel(locx-i,locy+j,BGCOLOR);// erasing other side, non used side
             }
         }
     }
@@ -261,14 +263,22 @@ void LCD_drawXBar(unsigned short locx, unsigned short locy, unsigned short color
         if(i<((int)(len*-1*frac))){
             for(j=0;j<width;j++){
                LCD_drawPixel(locx-i,locy+j,color);
+               LCD_drawPixel(locx+i,locy+j,BGCOLOR);// erasing other side, non used side
             }
         }
             else{
             for(j=0;j<width;j++){
               LCD_drawPixel(locx-i,locy+j,BGCOLOR);
+              LCD_drawPixel(locx+i,locy+j,BGCOLOR);// erasing other side, non used side
             }
         }
     }
+    }
+    
+    for(i=0;i<width;i++){
+        for(j=0;j<width;j++){
+            LCD_drawPixel(locx+i,locy+j,0xFFFF);
+        }
     }
 }
 
@@ -282,11 +292,13 @@ void LCD_drawYBar(unsigned short locx, unsigned short locy, unsigned short color
         if(i<((int)(len*frac))){
             for(j=0;j<width;j++){
                LCD_drawPixel(locx+j,locy+i,color);
+               LCD_drawPixel(locx+j,locy-i,BGCOLOR);// erasing other side, non used side
             }
         }
             else{
             for(j=0;j<width;j++){
               LCD_drawPixel(locx+j,locy+i,BGCOLOR);
+              LCD_drawPixel(locx+j,locy-i,BGCOLOR);// erasing other side, non used side
             }
         }
     }
@@ -295,14 +307,21 @@ void LCD_drawYBar(unsigned short locx, unsigned short locy, unsigned short color
         for(i=0;i<len;i++){
         if(i<((int)(len*-1*frac))){
             for(j=0;j<width;j++){
-               LCD_drawPixel(locx-j,locy+i,color);
+               LCD_drawPixel(locx+j,locy-i,color);
+               LCD_drawPixel(locx+j,locy+i,BGCOLOR);// erasing other side, non used side
             }
         }
             else{
             for(j=0;j<width;j++){
-              LCD_drawPixel(locx-j,locy+i,BGCOLOR);
+              LCD_drawPixel(locx+j,locy-i,BGCOLOR);
+              LCD_drawPixel(locx+j,locy+i,BGCOLOR); // erasing other side, non used side
             }
         }
     }
+    }
+    for(i=0;i<width;i++){
+        for(j=0;j<width;j++){
+            LCD_drawPixel(locx+j,locy+i,0xFFFF);
+        }
     }
 }
